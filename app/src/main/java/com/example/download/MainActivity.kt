@@ -31,7 +31,10 @@ class MainActivity : AppCompatActivity() {
         throwable.printStackTrace()
     }
 
+    val STORAGE_CODE = 101
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val Downloader = AndroidDownloader(this)
         var imageData = ByteArray(0)
         val WRITE_EXTERNAL_STORAGE_PERMISSION = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         val PERMISSION_REQUEST_CODE = 123
@@ -54,19 +57,22 @@ class MainActivity : AppCompatActivity() {
 
         button.setOnClickListener {
 
-            var aEditText = findViewById<EditText>(R.id.editText).toString()
+            var aEditText = findViewById(R.id.editText) as EditText
 
 
             val scope = CoroutineScope(Dispatchers.Default + coroutineExceptionHandler)
 
             // Launch a new coroutine in the scope
-            scope.launch {
-                val url = URL(aEditText)
-                imageData = url.readBytes()
+            /*scope.launch {
+
                 // TODO: Save the image data to a file or display it in an ImageView
-            }
+
+            }*/
+            val URL = aEditText.text.toString()
+            Downloader.DownloadFile(URL)
             Toast.makeText(this, "Download process ended", Toast.LENGTH_SHORT).show()
             Toast.makeText(this, imageData.toString(), Toast.LENGTH_SHORT).show()
+
 
         }
 
@@ -86,13 +92,11 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this@MainActivity, "Permission already granted", Toast.LENGTH_SHORT)
                     .show()
+            }
+        }
 
 
 
-                fun Download(aURL: String): ByteArray {
-                    val url = URL(aURL)
-                    return url.readBytes()
-                }
 
                 fun mSaveMediaToStorage(bitmap: Bitmap?) {
                     val filename = "${System.currentTimeMillis()}.jpg"
@@ -151,5 +155,3 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
-    }
-}
